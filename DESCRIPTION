@@ -3,7 +3,7 @@ Title: Global Dataset on Higher Education Institutions
 Version: 0.0.0.9000
 Authors@R: 
     person("Pablo", "Garcia-Guzman", email = "garciagp@ebrd.com", role = c("aut", "cre"))
-Description: This package provides access to a comprehensive institution-level dataset on higher education institutions 
+Description: This package provides access to a comprehensive institution-level dataset on higher education institutions
     around the world, including various details such as institution names, 
     URLs, location, funding type, languages used, accrediting agencies, year founded, degrees offered, and more.
 License: MIT + file LICENSE
@@ -11,3 +11,6 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
 URL: https://pablogguz.github.io/whed/
+Depends: 
+    R (>= 2.10)
+LazyData: true

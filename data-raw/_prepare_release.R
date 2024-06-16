@@ -25,3 +25,5 @@ pkgdown::build_site()
 
 # Increment package version ----
 # usethis::use_version()
+
+usethis::use_data(whed, overwrite = TRUE)
