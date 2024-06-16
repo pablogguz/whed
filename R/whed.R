@@ -2,7 +2,7 @@
 #'
 #' This dataset contains institution-level information on higher education institutions around the world.
 #'
-#' @format A data frame with X rows and Y variables:
+#' @format A data frame with 8887 rows and 213 variables:
 #' \describe{
 #'   \item{name}{Name of the institution}
 #'   \item{url}{Website URL of the institution}
@@ -22,5 +22,6 @@
 #'   \item{degree_name_X}{Name of degree X}
 #'   \item{degree_fields_study_X}{Fields of study for degree X}
 #' }
-#' @source Source of the data
+#' @source Source of the data: \url{https://whed.net/home.php}
+#'
 "whed"
