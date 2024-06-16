@@ -8,7 +8,8 @@
 packages_to_load <- c("ggplot2",
                       "dplyr",
                       "hexSticker",
-                      "usethis")
+                      "usethis",
+                      "magick")
 
 package.check <- lapply(
   packages_to_load,
@@ -35,7 +36,19 @@ sticker("inst/figures/dalle_logo.webp",
         s_height = 0.6,
         h_fill = "#D9D6CE",
         h_color = "#181C2D",
+        url = "pablogguz.github.io/subincomeR",
+        u_size = 4.8,
+        u_color = "#181C2D",
         filename = "inst/figures/logo.png") %>% plot()
+
+fuzz <- 50
+p <- image_read("inst/figures/logo.png")
+pp <- p %>%
+  image_fill(color = "transparent", refcolor = "white", fuzz = fuzz, point = "+1+1") %>%
+  image_fill(color = "transparent", refcolor = "white", fuzz = fuzz, point = paste0("+", image_info(p)$width-1, "+1")) %>%
+  image_fill(color = "transparent", refcolor = "white", fuzz = fuzz, point = paste0("+1", "+", image_info(p)$height-1)) %>%
+  image_fill(color = "transparent", refcolor = "white", fuzz = fuzz, point = paste0("+", image_info(p)$width-1, "+", image_info(p)$height-1))
+image_write(image = pp, path = "inst/figures/logo.png")
 
 # Generate string to copy-paste into README
 use_logo("inst/figures/logo.png", geometry = "480x556", retina = TRUE)
