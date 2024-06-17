@@ -5,7 +5,7 @@
 \alias{whed}
 \title{WHED Dataset}
 \format{
-A data frame with 8887 rows and 213 variables:
+A data frame with 21165 rows and 271 variables:
 \describe{
 \item{name}{Name of the institution}
 \item{url}{Website URL of the institution}

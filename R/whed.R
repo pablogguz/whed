@@ -2,7 +2,7 @@
 #'
 #' This dataset contains institution-level information on higher education institutions around the world.
 #'
-#' @format A data frame with 8887 rows and 213 variables:
+#' @format A data frame with 21165 rows and 271 variables:
 #' \describe{
 #'   \item{name}{Name of the institution}
 #'   \item{url}{Website URL of the institution}
