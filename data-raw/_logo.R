@@ -36,7 +36,7 @@ sticker("inst/figures/dalle_logo.webp",
         s_height = 0.6,
         h_fill = "#D9D6CE",
         h_color = "#181C2D",
-        url = "pablogguz.github.io/subincomeR",
+        url = "pablogguz.github.io/whed",
         u_size = 4.8,
         u_color = "#181C2D",
         filename = "inst/figures/logo.png") %>% plot()
