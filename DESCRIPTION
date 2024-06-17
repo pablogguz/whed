@@ -1,6 +1,6 @@
 Package: whed
 Title: Global Dataset on Higher Education Institutions
-Version: 0.0.0.9000
+Version: 0.0.0.9001
 Authors@R: 
     person("Pablo", "Garcia-Guzman", email = "garciagp@ebrd.com", role = c("aut", "cre"))
 Description: This package provides access to a comprehensive institution-level dataset on higher education institutions
