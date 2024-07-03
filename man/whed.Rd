@@ -18,12 +18,10 @@ A data frame with 21165 rows and 271 variables:
 \item{accrediting_agency}{Accrediting agency for the institution}
 \item{year_founded}{Year the institution was founded}
 \item{academic_year}{Academic year details}
-\item{business_school}{Indicates if the institution has a business school}
-\item{degree_count}{Number of degrees offered}
-\item{division_name_X}{Name of division X}
-\item{division_fields_study_X}{Fields of study in division X}
-\item{degree_name_X}{Name of degree X}
-\item{degree_fields_study_X}{Fields of study for degree X}
+\item{division_name_1 to division_name_116}{Names of divisions (1 to 116)}
+\item{division_fields_study_1 to division_fields_study_116}{Fields of study in divisions (1 to 116)}
+\item{degree_name_1 to degree_name_14}{Names of degrees (1 to 14)}
+\item{degree_fields_study_1 to degree_fields_study_14}{Fields of study for degrees (1 to 14)}
 }
 }
 \source{
