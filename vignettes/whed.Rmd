@@ -181,6 +181,6 @@ bar <- ggplot(countries, aes(x = reorder(country, inst100k), y = inst100k, fill 
         legend.direction='horizontal')  # Arrange legend items in a row
 ```
 
-```{r stem-show, echo = FALSE, fig.height = 4, fig.width = 7}
+```{r stem-show, echo = FALSE, fig.height = 4.6, fig.width = 8}
 print(bar)
 ```
