@@ -19,4 +19,15 @@ Imports:
     purrr,
     tidyr,
     rlang
+Suggests:
+    knitr,
+    rmarkdown,
+    WDI,
+    countrycode,
+    ggplot2,
+    giscoR,
+    extrafont,
+    stringr,
+    sf
 LazyData: true
+VignetteBuilder: knitr

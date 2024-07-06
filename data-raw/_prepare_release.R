@@ -18,6 +18,9 @@ devtools::check()
 pkgdown::build_site()
 #usethis::use_pkgdown_github_pages()
 
+# Vignettes ----
+usethis::use_vignette(whed)
+
 # system("R CMD build --resave-data .")
 
 # Add data-raw to .Rbuildignore ----
