@@ -1,10 +1,10 @@
 
 
-# Documentation ----
-devtools::document()
-
 # Load ----
 devtools::load_all()
+
+# Documentation ----
+devtools::document()
 
 # Install ----
 devtools::install()
