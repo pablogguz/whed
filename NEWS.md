@@ -1,5 +1,5 @@
 
-# whed v0.0.1
+# whed v0.0.1 
 
 * Modified structure of WHED dataset: degree and divisions names and fields of study are now nested in list columns
 * Added the `whed_wide()` function to convert the WHED dataset to a wide format with individual columns for all list columns
