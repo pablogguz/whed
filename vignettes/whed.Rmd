@@ -1,0 +1,186 @@
+---
+title: "About the WHED dataset"
+description: >
+  Learn more about the WHED dataset
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{About the WHED dataset}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r libraries, include = FALSE}
+library(whed)
+library(WDI)
+library(dplyr)
+library(countrycode)
+library(ggplot2)
+library(giscoR)
+library(extrafont)
+library(stringr)
+library(sf)
+```
+
+The [WHED](https://whed.net/home.php) is a dataset that contains institution-level information on higher education institutions around the world. The dataset is compiled and maintained by the International Association of Universities (IAU). Sadly, the IAU does not provide an structured version of the dataset available for download. The `whed` package provides an easy fix and makes the dataset available in a structured format.
+
+# What can you do with the WHED dataset?
+
+You can use the WHED dataset to answer questions such as:
+
+- How many higher education institutions are there in a given country or sub-national region?
+- What types of degrees are offered by higher education institutions?
+- How do local labor market characteristics relate to the structure of higher education in a given area? 
+
+# Coverage 
+
+The WHED dataset contains information on over 20,000 higher education institutions across 181 countries. 
+
+```{r map-gen, include=FALSE}
+
+# Load the WHED dataset
+data <- whed::whed %>%
+  mutate(iso3c = countrycode(country, "country.name", "iso3c")) 
+
+# Load population data from the World Development Indicators
+wdi <- WDI(indicator = "SP.POP.TOTL", 
+           start = 2021, 
+           end = 2023)
+
+# Keep latest non-missing obs. for population
+wdi <- wdi %>%
+  rename(pop = SP.POP.TOTL) %>%
+  filter(!is.na(pop)) %>%
+  group_by(iso3c) %>%
+  slice_max(order_by = year, n = 1) %>%
+  ungroup()
+
+# Compute number of institutions in each country 
+n_institutions <- data %>%
+  group_by(iso3c) %>%
+  summarise(n_institutions = n()) %>%
+  ungroup()
+
+# Merge WHED and population data
+plot <- n_institutions %>%
+  left_join(wdi, by = "iso3c") %>%
+  # institutions per 100,000 people
+  mutate(inst100k = n_institutions / (pop / 1e5)) %>%
+  # topcode at 2 
+  mutate(inst100k = ifelse(inst100k > 1.5, 1.5, inst100k)) %>%
+  # set to missing countries with less than 1 million people 
+  mutate(inst100k = ifelse(pop < 1e6, NA, inst100k))
+
+# Create world map
+world <- gisco_get_countries(epsg = "4326")
+  
+world_plot <- world %>%
+  left_join(plot, by = c("ISO3_CODE" = "iso3c")) %>%
+  filter(NAME_ENGL != "Antarctica" & NAME_ENGL != "Greenland") 
+
+map <- ggplot(data = world_plot) +
+  geom_sf(aes(fill = inst100k), color = "grey70", linewidth = .01) +
+  scale_fill_distiller(palette = "RdBu", na.value = "lightgray",
+                       name = stringr::str_wrap("Number of inst. per 100,000 people", width = 50),
+                       guide = guide_colourbar(title.position = "top",
+                                               title.hjust = 0.5, barheight = 0.4,
+                                               barwidth = 12),
+                       direction = 1) + 
+  theme_void() +
+  labs(caption = "Note: excluding countries with less than 1 million people.",
+       title = "Higher education institutions around the world") +
+  theme(text = element_text(family = "Open Sans"),
+        plot.title = element_text(hjust = 0.5),
+        legend.position = "bottom",
+        plot.background = element_rect(fill = "#ffffff", color = NA),
+        legend.title.align = 0.5,
+        legend.title = element_text(size = 8), # Reduce font size of legend title
+        plot.caption = element_text(size = 6, hjust = 0.01, vjust = 2, colour = "#B0B0B0")) +
+  coord_sf(crs= "+proj=robin")
+```
+
+```{r map-show, echo = FALSE, fig.height = 4.6, fig.width = 8}
+print(map)
+```
+
+# Some examples
+
+We can look at which are the countries with the highest and lowest number of institutions offering STEM degrees per capita:
+
+```{r stem-gen, include=FALSE}
+
+# Define a function to check for STEM degrees
+is_stem_degree <- function(degree_list) {
+  # Define STEM-related keywords
+  stem_keywords <- c("Engineering", "Math", "Physics", "Computer Science", "Biology", "Chemistry", "Medicine")
+
+  # Flatten the nested list into a single character vector
+  flat_degrees <- unlist(degree_list)
+
+  # Check if any of the degrees contain STEM keywords
+  any(str_detect(flat_degrees, paste(stem_keywords, collapse = "|")))
+}
+
+# Filter the data for STEM degrees
+stem <- data %>%
+  filter(sapply(degree_fields_study, is_stem_degree))
+
+# Compute number of institutions in each country 
+n_institutions <- stem %>%
+  group_by(iso3c) %>%
+  summarise(n_institutions = n()) %>%
+  ungroup()
+
+# Merge WHED and population data
+plot <- n_institutions %>%
+  left_join(wdi, by = "iso3c") %>%
+  # institutions per 100,000 people
+  mutate(inst100k = n_institutions / (pop / 1e5)) %>%
+  # topcode at 2 
+  mutate(inst100k = ifelse(inst100k > 1.5, 1.5, inst100k)) %>%
+  # set to missing countries with less than 1 million people 
+  mutate(inst100k = ifelse(pop < 1e6, NA, inst100k))
+
+# Create bar chart of top and bottom 10 countries with the highest number of STEM institutions per capita
+top_countries <- plot %>%
+  filter(!is.na(inst100k)) %>%
+  top_n(10, inst100k) %>%
+  arrange(desc(inst100k))
+
+bottom_countries <- plot %>%
+  filter(!is.na(inst100k)) %>%
+  top_n(-10, inst100k) %>%
+  arrange(inst100k)
+
+# Combine
+countries <- bind_rows(top_countries, bottom_countries) %>%
+  mutate(country = factor(country, levels = c(top_countries$country, bottom_countries$country)),
+         group = ifelse(country %in% top_countries$country, "Top 10", "Bottom 10"))
+
+bar <- ggplot(countries, aes(x = reorder(country, inst100k), y = inst100k, fill = group)) +
+  geom_col() +
+  scale_fill_manual(values = c("Top 10" = "#0072B2", "Bottom 10" = "#CC0000"),
+                    guide = guide_legend(title = NULL, 
+                                         nrow = 1,
+                                         keyheight = unit(0.4, "cm"), 
+                                         keywidth = unit(0.4, "cm"))) + 
+  coord_flip() +
+  labs(title = "Top and bottom 10 countries by number of institutions offering STEM degrees",
+       x = "",
+       y = "Institutions offering STEM degrees per 100,000 people",
+       caption = "Note: excluding countries with less than 1 million people.") +
+  theme_minimal() +
+  theme(text = element_text(family = "Open Sans"),
+        plot.title = element_text(size = 10, hjust = 0.5),
+        axis.text.y = element_text(size = 8),
+        axis.text.x = element_text(size = 8),
+        axis.title = element_text(size = 8),
+        plot.background = element_rect(fill = "#ffffff", color = NA),
+        plot.caption = element_text(size = 7, hjust = 0.01, vjust = 2, colour = "#B0B0B0"),
+        legend.position='top', 
+        legend.justification='left',
+        legend.direction='horizontal')  # Arrange legend items in a row
+```
+
+```{r stem-show, echo = FALSE, fig.height = 4, fig.width = 7}
+print(bar)
+```
