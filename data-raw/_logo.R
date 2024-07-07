@@ -25,8 +25,8 @@ lapply(packages_to_load, require, character=T)
 # Script starts ----------------------------------------------------------------
 
 # Create the hex sticker
-sticker("inst/figures/dalle_logo.webp",
-        white_around_sticker = T,
+sticker("inst/figures/logo_nobackground.png",
+        #white_around_sticker = T,
         package = "whed",
         p_size = 27,
         p_color = "#181C2D",
@@ -42,14 +42,14 @@ sticker("inst/figures/dalle_logo.webp",
         u_color = "#181C2D",
         filename = "inst/figures/logo.png") %>% plot()
 
-fuzz <- 50
-p <- image_read("inst/figures/logo.png")
-pp <- p %>%
-  image_fill(color = "transparent", refcolor = "white", fuzz = fuzz, point = "+1+1") %>%
-  image_fill(color = "transparent", refcolor = "white", fuzz = fuzz, point = paste0("+", image_info(p)$width-1, "+1")) %>%
-  image_fill(color = "transparent", refcolor = "white", fuzz = fuzz, point = paste0("+1", "+", image_info(p)$height-1)) %>%
-  image_fill(color = "transparent", refcolor = "white", fuzz = fuzz, point = paste0("+", image_info(p)$width-1, "+", image_info(p)$height-1))
-image_write(image = pp, path = "inst/figures/logo.png")
+# fuzz <- 50
+# p <- image_read("inst/figures/logo.png")
+# pp <- p %>%
+#   image_fill(color = "transparent", refcolor = "white", fuzz = fuzz, point = "+1+1") %>%
+#   image_fill(color = "transparent", refcolor = "white", fuzz = fuzz, point = paste0("+", image_info(p)$width-1, "+1")) %>%
+#   image_fill(color = "transparent", refcolor = "white", fuzz = fuzz, point = paste0("+1", "+", image_info(p)$height-1)) %>%
+#   image_fill(color = "transparent", refcolor = "white", fuzz = fuzz, point = paste0("+", image_info(p)$width-1, "+", image_info(p)$height-1))
+# image_write(image = pp, path = "inst/figures/logo.png")
 
 # Generate string to copy-paste into README
 use_logo("inst/figures/logo.png", geometry = "480x556", retina = TRUE)
